@@ -1,3 +1,9 @@
+- Add a dropdown menu to all sort and submit to sort.
+- Update NUMBER_OF_ARRAY_BARS every time window size is changed
+- Find a way to add hover background color to buttons in react (in restore functions)
+- Update with sorted array after visualization
+- Generalize disableSort,resetSort functions
+- Implement heap sort
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
