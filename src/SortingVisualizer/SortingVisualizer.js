@@ -21,7 +21,7 @@ window.onresize = reportWindowSize; //TBD -> find a way to update state also whe
 
 const PRIMARY_COLOR = 'turquoise'; //Normal color of bars
 const SECONDARY_COLOR = 'red'; //Color of bars when they are being compared
-const ANIMATION_SPEED_MS = 1.5; //Animation Speed (how fast color changes, how fast height gets overwritten)
+const ANIMATION_SPEED_MS = 10; //Animation Speed (how fast color changes, how fast height gets overwritten)
 
 //Tooltips for buttons
 const DISABLED_BUTTON = "Currently Disabled"
@@ -44,7 +44,7 @@ class SortingVisualizer extends React.Component {
     resetArray() {
         const array = []
         for (let i = 0;i < NUMBER_OF_ARRAY_BARS;i++) {
-            array.push(randomIntFromInterval(5,WINDOW_HEIGHT-30));
+            array.push(randomIntFromInterval(25,WINDOW_HEIGHT-30));
         }
         this.setState({array: array});
         this.restoreStoreButtons();
