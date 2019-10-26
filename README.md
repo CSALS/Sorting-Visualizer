@@ -4,7 +4,7 @@
 - Update with sorted array after visualization
 - Generalize disableSort,resetSort functions
 - Implement heap sort
-- Credits to @clementmihailescu for this project idea.
+- Credits to [Clément Mihailescu](https://github.com/clementmihailescu) for this project idea.
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
