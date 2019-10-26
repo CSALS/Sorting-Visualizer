@@ -1,0 +1,32 @@
+.array-container {
+    position: relative;
+    bottom:0px;
+}
+  
+.array-bar {
+    width: 4px;
+    display: inline-block; /* arranges the array bars in horizontal way*/
+    margin: 0 2px; /*Top,Bottom -> 0px Left,Right -> 1px*/
+}
+
+
+
+.buttons button {
+    background-color: #47535E; 
+    border: none;
+    color: #EAF0F1;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    outline: 0;
+    display: block; /* Make the buttons appear below each other */
+    font: 15px "Century Gothic", Futura, sans-serif;
+}
+.buttons button:not(:last-child) {
+    border-bottom: none; /* Prevent double borders */
+}
+  
+  /* Add a background color on hover */
+/* .buttons button:hover {
+    background-color: #3e8e41;
+} */
