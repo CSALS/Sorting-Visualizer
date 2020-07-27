@@ -21,7 +21,7 @@ window.onresize = reportWindowSize; //TBD -> find a way to update state also whe
 
 const PRIMARY_COLOR = 'turquoise'; //Normal color of bars
 const SECONDARY_COLOR = 'red'; //Color of bars when they are being compared
-const ANIMATION_SPEED_MS = 10; //Animation Speed (how fast color changes, how fast height gets overwritten)
+const ANIMATION_SPEED_MS = 25; //Animation Speed (how fast color changes, how fast height gets overwritten)
 
 //Tooltips for buttons
 const DISABLED_BUTTON = "Currently Disabled"
