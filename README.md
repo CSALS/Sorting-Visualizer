@@ -3,6 +3,13 @@ A visualization for various sorting algorithms like merge sort, heap sort, quick
 Access it using this link https://csals.github.io/Sorting-Visualizer/.
 ![](sorting_visualizer.gif)
 
+
+## NOTES
+- in every sorting algo I am returning two comparisions.
+- that's because when I am comparing 2 bars first I will change their color to red and again need to change to original color
+- for that reason every time 2 bars are compared we need 2 comparisions
+
+
 ## To Be Implemented
 - Add a dropdown menu to all sort and submit button to sort.
 - Update NUMBER_OF_ARRAY_BARS every time window size is changed

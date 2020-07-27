@@ -4,7 +4,7 @@
 }
   
 .array-bar {
-    width: 4px;
+    width: 20px;
     display: inline-block; /* arranges the array bars in horizontal way*/
     margin: 0 2px; /*Top,Bottom -> 0px Left,Right -> 1px*/
 }

@@ -23,33 +23,30 @@ function merge(auxillaryArray, startIndex, middleIndex, endIndex, animations) {
     let j = middleIndex + 1;
     while(i <= middleIndex && j <= endIndex) {
         //Comparing value at ith and jth index so push them to change their color
-        animations.push([i, j]);
+        animations.push(["comparision1", i, j]);
         //By changing color we imply that we are comparing those two values and then again we should revert back to their original color so push them again
-        animations.push([i, j]);
+        animations.push(["comparision2", i, j]);
         if(auxillaryArray[i] <= auxillaryArray[j]) {
-            //We should overwrite the value at (i+startIndex)th index with ith index so push them to highlight swap their heights
-            animations.push([sortArray.length + startIndex, auxillaryArray[i]]);
             sortArray.push(auxillaryArray[i++]);
         }
         else {
-            //We should overwrite the value at (i+startIndex)th index with jth index so push them to highlight swap their heights
-            animations.push([sortArray.length + startIndex, auxillaryArray[j]]);
             sortArray.push(auxillaryArray[j++]);
         }
     }
     while(i <= middleIndex) {
-        animations.push([i, i]);
-        animations.push([i, i]);
-        animations.push([sortArray.length + startIndex, auxillaryArray[i]]);
+        animations.push(["comparision1", i, i]);
+        animations.push(["comparision2", i, i]);
         sortArray.push(auxillaryArray[i++]);
     }
     while(j <= endIndex) {
-        animations.push([j, j]);
-        animations.push([j, j]);
-        animations.push([sortArray.length + startIndex, auxillaryArray[j]]);
+        animations.push(["comparision1", j, j]);
+        animations.push(["comparision2", j, j]);
         sortArray.push(auxillaryArray[j++]);
     }
     for (let i = startIndex; i <= endIndex; i++) {
+        animations.push(["comparision1", i, i - startIndex]);
+        animations.push(["overwrite", i, sortArray[i - startIndex]]);
+        animations.push(["comparision2", i, i - startIndex]);
         auxillaryArray[i] = sortArray[i - startIndex];
     }
 }

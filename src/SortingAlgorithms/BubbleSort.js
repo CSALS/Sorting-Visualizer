@@ -10,20 +10,21 @@ export function getBubbleSortAnimations(array) {
 
 function bubbleSort(auxillaryArray, animations) {
     const N = auxillaryArray.length;
-    for (let i = 0; i < N - 1; i++) {
-        for (let j = 0; j < N - i -1; j++) {
-            animations.push([j, j + 1]);
-            animations.push([j, j + 1]);
-            if (auxillaryArray[j] > auxillaryArray[j + 1]) {
-                animations.push([j, auxillaryArray[j + 1]]);
-                animations.push([j + 1, auxillaryArray[j]]);
-                swap(auxillaryArray, j, j + 1);
-            }
-            else {
-                animations.push([-1, -1]);
-                animations.push([-1, -1]);
+    let iters = N - 1;
+    while(iters > 0) {
+        let swapped = false;
+        for(let i = 0; i < iters; ++i) {
+            animations.push(["comparision1", i, i + 1]);
+            animations.push(["comparision2", i, i + 1]);
+            if(auxillaryArray[i] > auxillaryArray[i + 1]) {
+                swapped = true;
+                animations.push(["swap", i, auxillaryArray[i + 1]]);
+                animations.push(["swap", i + 1, auxillaryArray[i]]);
+                swap(auxillaryArray, i, i + 1);
             }
         }
+        if(swapped === false) break;
+        iters--;
     }
 }
 
