@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getMergeSortAnimations } from '../SortingAlgorithms/MergeSort';
 import { getQuickSortAnimations } from '../SortingAlgorithms/QuickSort';
 import { getBubbleSortAnimations } from '../SortingAlgorithms/BubbleSort';
@@ -18,6 +18,8 @@ const BACKGROUND_COLOR = '#1e293b'; // Darker background color
 const SortingVisualizer = () => {
   const [array, setArray] = useState([]);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
+  const [isSorting, setIsSorting] = useState(false); // Track sorting state
+  const timeoutsRef = useRef([]); // Store timeouts
 
   useEffect(() => {
     resetArray();
@@ -33,11 +35,23 @@ const SortingVisualizer = () => {
   };
 
   const resetArray = () => {
+    if (isSorting) {
+      clearTimeouts(); // Clear ongoing animations
+      setIsSorting(false);
+      resetBarColors(); // Reset bar colors
+    }
     const newArray = [];
     for (let i = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
       newArray.push(randomIntFromInterval(5, WINDOW_HEIGHT / 2));
     }
     setArray(newArray);
+  };
+
+  const resetBarColors = () => {
+    const arrayBars = document.getElementsByClassName('array-bar');
+    for (let i = 0; i < arrayBars.length; i++) {
+      arrayBars[i].style.backgroundColor = PRIMARY_COLOR; // Reset to primary color
+    }
   };
 
   const disableSortButtons = () => {
@@ -129,6 +143,7 @@ const SortingVisualizer = () => {
   };
 
   const animateSort = (animations) => {
+    setIsSorting(true); // Set sorting state to true
     for (let i = 0; i < animations.length; i++) {
       const arrayBars = document.getElementsByClassName('array-bar');
       const isColorChange = animations[i][0] === "comparision1" || animations[i][0] === "comparision2";
@@ -137,21 +152,28 @@ const SortingVisualizer = () => {
         const [, barOneIndex, barTwoIndex] = animations[i];
         const barOneStyle = arrayBars[barOneIndex].style;
         const barTwoStyle = arrayBars[barTwoIndex].style;
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           barOneStyle.backgroundColor = color;
           barTwoStyle.backgroundColor = color;
         }, i * ANIMATION_SPEED_MS);
+        timeoutsRef.current.push(timeoutId); // Store timeout
       } else {
         const [, barIndex, newHeight] = animations[i];
         if (barIndex === -1) {
           continue;
         }
         const barStyle = arrayBars[barIndex].style;
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           barStyle.height = `${newHeight}px`;
         }, i * ANIMATION_SPEED_MS);
+        timeoutsRef.current.push(timeoutId); // Store timeout
       }
     }
+  };
+
+  const clearTimeouts = () => {
+    timeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId)); // Clear all timeouts
+    timeoutsRef.current = []; // Reset the array
   };
 
   return (
