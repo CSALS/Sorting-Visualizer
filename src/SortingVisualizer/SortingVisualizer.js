@@ -14,13 +14,9 @@ const PRIMARY_COLOR = '#2db5a3'; // Darker teal color
 const SECONDARY_COLOR = '#f43f5e'; // Darker red color
 const BACKGROUND_COLOR = '#1e293b'; // Darker background color
 
-const ENABLED_BUTTON = {
-  nlogn: "O(NlogN) Time Complexity",
-  nSquare: "O(N^2) Time Complexity"
-};
-
 const SortingVisualizer = () => {
   const [array, setArray] = useState([]);
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
 
   useEffect(() => {
     resetArray();
@@ -41,35 +37,14 @@ const SortingVisualizer = () => {
       newArray.push(randomIntFromInterval(5, WINDOW_HEIGHT / 2));
     }
     setArray(newArray);
-    restoreStoreButtons();
   };
 
   const disableSortButtons = () => {
-    const buttons = ['generateNewArray', 'mergeSort', 'quickSort', 'bubbleSort', 'insertionSort', 'selectionSort'];
-    buttons.forEach(id => {
-      const button = document.getElementById(id);
-      button.disabled = true;
-      button.classList.add('opacity-50', 'cursor-not-allowed');
-      button.classList.remove('hover:from-teal-500', 'hover:to-blue-600');
-    });
+    // No buttons to disable since we removed them
   };
 
   const restoreStoreButtons = () => {
-    const buttons = [
-      { id: 'generateNewArray', title: 'Generates a new random array' },
-      { id: 'mergeSort', title: ENABLED_BUTTON.nlogn },
-      { id: 'quickSort', title: ENABLED_BUTTON.nSquare },
-      { id: 'bubbleSort', title: ENABLED_BUTTON.nSquare },
-      { id: 'insertionSort', title: ENABLED_BUTTON.nSquare },
-      { id: 'selectionSort', title: ENABLED_BUTTON.nSquare },
-    ];
-    buttons.forEach(({ id, title }) => {
-      const button = document.getElementById(id);
-      button.disabled = false;
-      button.title = title;
-      button.classList.remove('opacity-50', 'cursor-not-allowed');
-      button.classList.add('hover:from-teal-500', 'hover:to-blue-600');
-    });
+    // No buttons to restore since we removed them
   };
 
   const mergeSort = () => {
@@ -112,6 +87,35 @@ const SortingVisualizer = () => {
     setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
   };
 
+  const handleAlgorithmChange = (e) => {
+    setSelectedAlgorithm(e.target.value);
+  };
+
+  const executeSelectedSort = () => {
+    if (!selectedAlgorithm) return;
+    
+    disableSortButtons();
+    switch (selectedAlgorithm) {
+      case 'mergeSort':
+        mergeSort();
+        break;
+      case 'quickSort':
+        quickSort();
+        break;
+      case 'bubbleSort':
+        bubbleSort();
+        break;
+      case 'insertionSort':
+        insertionSort();
+        break;
+      case 'selectionSort':
+        selectionSort();
+        break;
+      default:
+        restoreStoreButtons();
+    }
+  };
+
   const animateSort = (animations) => {
     for (let i = 0; i < animations.length; i++) {
       const arrayBars = document.getElementsByClassName('array-bar');
@@ -152,45 +156,28 @@ const SortingVisualizer = () => {
         >
           Generate New Array
         </button>
-        <button
-          id="mergeSort"
-          className="px-6 py-2 rounded-md bg-gradient-to-r from-purple-400 to-purple-600 text-white font-semibold shadow-lg hover:from-purple-500 hover:to-purple-700 transition-all duration-300"
-          onClick={mergeSort}
-          title={ENABLED_BUTTON.nlogn}
+        {/* Dropdown for selecting sorting algorithm */}
+        <select
+          value={selectedAlgorithm}
+          onChange={handleAlgorithmChange}
+          className="px-6 py-2 rounded-md bg-slate-700 text-white font-semibold shadow-lg hover:bg-slate-600 transition-all duration-300"
         >
-          Merge Sort
-        </button>
+          <option value="">Select Algorithm</option>
+          <option value="mergeSort">Merge Sort</option>
+          <option value="quickSort">Quick Sort</option>
+          <option value="bubbleSort">Bubble Sort</option>
+          <option value="insertionSort">Insertion Sort</option>
+          <option value="selectionSort">Selection Sort</option>
+        </select>
+        {/* Submit button to execute the selected sort */}
         <button
-          id="quickSort"
-          className="px-6 py-2 rounded-md bg-gradient-to-r from-yellow-400 to-yellow-600 text-white font-semibold shadow-lg hover:from-yellow-500 hover:to-yellow-700 transition-all duration-300"
-          onClick={quickSort}
-          title={ENABLED_BUTTON.nSquare}
+          onClick={executeSelectedSort}
+          className={`px-6 py-2 rounded-md font-semibold shadow-lg transition-all duration-300 ${
+            selectedAlgorithm ? 'bg-gradient-to-r from-green-400 to-green-600 text-white hover:from-green-500 hover:to-green-700' : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+          }`}
+          disabled={!selectedAlgorithm} // Disable button if no algorithm is selected
         >
-          Quick Sort
-        </button>
-        <button
-          id="bubbleSort"
-          className="px-6 py-2 rounded-md bg-gradient-to-r from-green-400 to-green-600 text-white font-semibold shadow-lg hover:from-green-500 hover:to-green-700 transition-all duration-300"
-          onClick={bubbleSort}
-          title={ENABLED_BUTTON.nSquare}
-        >
-          Bubble Sort
-        </button>
-        <button
-          id="insertionSort"
-          className="px-6 py-2 rounded-md bg-gradient-to-r from-red-400 to-red-600 text-white font-semibold shadow-lg hover:from-red-500 hover:to-red-700 transition-all duration-300"
-          onClick={insertionSort}
-          title={ENABLED_BUTTON.nSquare}
-        >
-          Insertion Sort
-        </button>
-        <button
-          id="selectionSort"
-          className="px-6 py-2 rounded-md bg-gradient-to-r from-indigo-400 to-indigo-600 text-white font-semibold shadow-lg hover:from-indigo-500 hover:to-indigo-700 transition-all duration-300"
-          onClick={selectionSort}
-          title={ENABLED_BUTTON.nSquare}
-        >
-          Selection Sort
+          Sort
         </button>
       </div>
       <div className="w-full h-[calc(100vh-350px)] min-h-[400px] bg-slate-800 rounded-xl p-4 shadow-2xl flex items-end justify-center">
