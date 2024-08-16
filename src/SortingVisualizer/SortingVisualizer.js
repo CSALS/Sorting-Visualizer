@@ -10,7 +10,13 @@ import { getHeapSortAnimations } from '../SortingAlgorithms/HeapSort';
 let WINDOW_WIDTH = window.innerWidth;
 let WINDOW_HEIGHT = window.innerHeight;
 let NUMBER_OF_ARRAY_BARS = Math.floor(WINDOW_WIDTH / 8);
-const ANIMATION_SPEED_MS = 5;
+const ANIMATION_SPEED_OPTIONS = {
+  '0.25x': 150,
+  '0.5x': 75,
+  '1x': 5,
+  '1.5x': 2.5,
+  '2x': 1.5,
+};
 const PRIMARY_COLOR = '#2db5a3'; // Darker teal color
 const SECONDARY_COLOR = '#f43f5e'; // Darker red color
 const BACKGROUND_COLOR = '#1e293b'; // Darker background color
@@ -19,6 +25,7 @@ const SortingVisualizer = () => {
   const [array, setArray] = useState([]);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
   const [isSorting, setIsSorting] = useState(false); // Track sorting state
+  const [playbackSpeed, setPlaybackSpeed] = useState('1x'); // New state for playback speed
   const timeoutsRef = useRef([]); // Store timeouts
 
   useEffect(() => {
@@ -66,7 +73,7 @@ const SortingVisualizer = () => {
     disableSortButtons();
     const [animations, sortArray] = getMergeSortAnimations(array);
     animateSort(animations);
-    const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS * animations.length / 2 + 3000);
+    const RESTORE_TIME = parseInt(ANIMATION_SPEED_OPTIONS[playbackSpeed] * animations.length / 2 + 3000);
     setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
   };
 
@@ -74,7 +81,7 @@ const SortingVisualizer = () => {
     disableSortButtons();
     const [animations, sortArray] = getQuickSortAnimations(array);
     animateSort(animations);
-    const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS * animations.length / 2 + 3000);
+    const RESTORE_TIME = parseInt(ANIMATION_SPEED_OPTIONS[playbackSpeed] * animations.length / 2 + 3000);
     setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
   };
 
@@ -82,7 +89,7 @@ const SortingVisualizer = () => {
     disableSortButtons();
     const [animations, sortArray] = getBubbleSortAnimations(array);
     animateSort(animations);
-    const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS * animations.length / 2 + 3000);
+    const RESTORE_TIME = parseInt(ANIMATION_SPEED_OPTIONS[playbackSpeed] * animations.length / 2 + 3000);
     setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
   };
 
@@ -90,7 +97,7 @@ const SortingVisualizer = () => {
     disableSortButtons();
     const [animations, sortArray] = getInsertionSortAnimations(array);
     animateSort(animations);
-    const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS * animations.length / 2 + 3000);
+    const RESTORE_TIME = parseInt(ANIMATION_SPEED_OPTIONS[playbackSpeed] * animations.length / 2 + 3000);
     setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
   };
 
@@ -98,7 +105,7 @@ const SortingVisualizer = () => {
     disableSortButtons();
     const [animations, sortArray] = getSelectionSortAnimations(array);
     animateSort(animations);
-    const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS * animations.length / 2 + 3000);
+    const RESTORE_TIME = parseInt(ANIMATION_SPEED_OPTIONS[playbackSpeed] * animations.length / 2 + 3000);
     setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
   };
 
@@ -106,12 +113,16 @@ const SortingVisualizer = () => {
     disableSortButtons();
     const [animations, sortArray] = getHeapSortAnimations(array);
     animateSort(animations);
-    const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS * animations.length / 2 + 3000);
+    const RESTORE_TIME = parseInt(ANIMATION_SPEED_OPTIONS[playbackSpeed] * animations.length / 2 + 3000);
     setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
   };
 
   const handleAlgorithmChange = (e) => {
     setSelectedAlgorithm(e.target.value);
+  };
+
+  const handlePlaybackSpeedChange = (e) => {
+    setPlaybackSpeed(e.target.value);
   };
 
   const executeSelectedSort = () => {
@@ -144,6 +155,7 @@ const SortingVisualizer = () => {
 
   const animateSort = (animations) => {
     setIsSorting(true); // Set sorting state to true
+    const speedMultiplier = ANIMATION_SPEED_OPTIONS[playbackSpeed]; // Get speed multiplier
     for (let i = 0; i < animations.length; i++) {
       const arrayBars = document.getElementsByClassName('array-bar');
       const isColorChange = animations[i][0] === "comparision1" || animations[i][0] === "comparision2";
@@ -155,7 +167,7 @@ const SortingVisualizer = () => {
         const timeoutId = setTimeout(() => {
           barOneStyle.backgroundColor = color;
           barTwoStyle.backgroundColor = color;
-        }, i * ANIMATION_SPEED_MS);
+        }, i * speedMultiplier);
         timeoutsRef.current.push(timeoutId); // Store timeout
       } else {
         const [, barIndex, newHeight] = animations[i];
@@ -165,7 +177,7 @@ const SortingVisualizer = () => {
         const barStyle = arrayBars[barIndex].style;
         const timeoutId = setTimeout(() => {
           barStyle.height = `${newHeight}px`;
-        }, i * ANIMATION_SPEED_MS);
+        }, i * speedMultiplier);
         timeoutsRef.current.push(timeoutId); // Store timeout
       }
     }
@@ -203,6 +215,16 @@ const SortingVisualizer = () => {
           <option value="insertionSort">Insertion Sort</option>
           <option value="selectionSort">Selection Sort</option>
           <option value="heapSort">Heap Sort</option>
+        </select>
+        {/* Dropdown for selecting playback speed */}
+        <select
+          value={playbackSpeed}
+          onChange={handlePlaybackSpeedChange}
+          className="px-6 py-2 rounded-md bg-slate-700 text-white font-semibold shadow-lg hover:bg-slate-600 transition-all duration-300"
+        >
+          {Object.keys(ANIMATION_SPEED_OPTIONS).map((speed) => (
+            <option key={speed} value={speed}>{speed}</option>
+          ))}
         </select>
         {/* Submit button to execute the selected sort */}
         <button
