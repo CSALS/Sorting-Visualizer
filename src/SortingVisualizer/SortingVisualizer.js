@@ -4,6 +4,7 @@ import { getQuickSortAnimations } from '../SortingAlgorithms/QuickSort';
 import { getBubbleSortAnimations } from '../SortingAlgorithms/BubbleSort';
 import { getInsertionSortAnimations } from '../SortingAlgorithms/InsertionSort';
 import { getSelectionSortAnimations } from '../SortingAlgorithms/SelectionSort';
+import { getHeapSortAnimations } from '../SortingAlgorithms/HeapSort';
 
 // Constants
 let WINDOW_WIDTH = window.innerWidth;
@@ -87,6 +88,14 @@ const SortingVisualizer = () => {
     setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
   };
 
+  const heapSort = () => {
+    disableSortButtons();
+    const [animations, sortArray] = getHeapSortAnimations(array);
+    animateSort(animations);
+    const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS * animations.length / 2 + 3000);
+    setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
+  };
+
   const handleAlgorithmChange = (e) => {
     setSelectedAlgorithm(e.target.value);
   };
@@ -110,6 +119,9 @@ const SortingVisualizer = () => {
         break;
       case 'selectionSort':
         selectionSort();
+        break;
+      case 'heapSort':
+        heapSort();
         break;
       default:
         restoreStoreButtons();
@@ -168,6 +180,7 @@ const SortingVisualizer = () => {
           <option value="bubbleSort">Bubble Sort</option>
           <option value="insertionSort">Insertion Sort</option>
           <option value="selectionSort">Selection Sort</option>
+          <option value="heapSort">Heap Sort</option>
         </select>
         {/* Submit button to execute the selected sort */}
         <button
