@@ -46,7 +46,7 @@ const SortingVisualizer = () => {
   };
 
   const disableSortButtons = () => {
-    const buttons = ['mergeSort', 'quickSort', 'bubbleSort', 'insertionSort', 'selectionSort'];
+    const buttons = ['generateNewArray', 'mergeSort', 'quickSort', 'bubbleSort', 'insertionSort', 'selectionSort'];
     buttons.forEach(id => {
       const button = document.getElementById(id);
       button.disabled = true;
@@ -58,6 +58,7 @@ const SortingVisualizer = () => {
 
   const restoreStoreButtons = () => {
     const buttons = [
+      { id: 'generateNewArray', title: 'Generates a new random array' },
       { id: 'mergeSort', title: ENABLED_BUTTON.nlogn },
       { id: 'quickSort', title: ENABLED_BUTTON.nSquare },
       { id: 'bubbleSort', title: ENABLED_BUTTON.nSquare },
@@ -146,6 +147,7 @@ const SortingVisualizer = () => {
       </h1>
       <div className="mb-12 flex gap-4 flex-wrap justify-center">
         <button
+          id="generateNewArray"
           className="px-6 py-2 rounded-md bg-gradient-to-r from-teal-400 to-teal-600 text-white font-semibold shadow-lg hover:from-teal-500 hover:to-teal-700 transition-all duration-300"
           onClick={resetArray}
           title="Generates a new random array"
