@@ -10,14 +10,6 @@ Access it using this link https://csals.github.io/Sorting-Visualizer/.
 - for that reason every time 2 bars are compared we need 2 comparisions
 
 
-## To Be Implemented
-- Add a dropdown menu to all sort and submit button to sort.
-- Update NUMBER_OF_ARRAY_BARS every time window size is changed
-- Find a way to add hover background color to buttons in react (in restore functions)
-- Update with sorted array after visualization
-- Generalize disableSort,resetSort functions
-- Implement heap sort
-- Stop the algorithm when reset button is pressed
 - Huge thanks to [Clément Mihailescu](https://github.com/clementmihailescu) for this project idea.
 
 ## 
