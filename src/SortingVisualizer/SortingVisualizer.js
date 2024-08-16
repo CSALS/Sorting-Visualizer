@@ -14,7 +14,6 @@ const PRIMARY_COLOR = '#2db5a3'; // Darker teal color
 const SECONDARY_COLOR = '#f43f5e'; // Darker red color
 const BACKGROUND_COLOR = '#1e293b'; // Darker background color
 
-const DISABLED_BUTTON = "Currently Disabled";
 const ENABLED_BUTTON = {
   nlogn: "O(NlogN) Time Complexity",
   nSquare: "O(N^2) Time Complexity"
@@ -50,7 +49,6 @@ const SortingVisualizer = () => {
     buttons.forEach(id => {
       const button = document.getElementById(id);
       button.disabled = true;
-      button.title = DISABLED_BUTTON;
       button.classList.add('opacity-50', 'cursor-not-allowed');
       button.classList.remove('hover:from-teal-500', 'hover:to-blue-600');
     });
