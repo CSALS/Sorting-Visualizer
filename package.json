@@ -5,7 +5,7 @@
   "dependencies": {
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
-    "react-scripts": "3.2.0"
+    "react-scripts": "^5.0.1"
   },
   "homepage": "http://CSALS.github.io/Sorting-Visualizer",
   "scripts": {
@@ -32,6 +32,9 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^2.1.1"
+    "autoprefixer": "^10.4.20",
+    "gh-pages": "^6.1.1",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10"
   }
 }

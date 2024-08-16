@@ -1,309 +1,216 @@
-import React from 'react';
-import './SortingVisualizer.css';
-import {getMergeSortAnimations} from '../SortingAlgorithms/MergeSort';
-import {getHeapSortAnimations} from '../SortingAlgorithms/HeapSort';
-import {getQuickSortAnimations} from '../SortingAlgorithms/QuickSort';
-import {getInsertionSortAnimations} from '../SortingAlgorithms/InsertionSort';
-import {getSelectionSortAnimations} from '../SortingAlgorithms/SelectionSort';
-import {getBubbleSortAnimations} from '../SortingAlgorithms/BubbleSort';
-//Changing width,height accordingly with the browser
+import React, { useState, useEffect } from 'react';
+import { getMergeSortAnimations } from '../SortingAlgorithms/MergeSort';
+import { getQuickSortAnimations } from '../SortingAlgorithms/QuickSort';
+import { getBubbleSortAnimations } from '../SortingAlgorithms/BubbleSort';
+import { getInsertionSortAnimations } from '../SortingAlgorithms/InsertionSort';
+import { getSelectionSortAnimations } from '../SortingAlgorithms/SelectionSort';
+
+// Constants
 let WINDOW_WIDTH = window.innerWidth;
 let WINDOW_HEIGHT = window.innerHeight;
-let NUMBER_OF_ARRAY_BARS = 58;
+let NUMBER_OF_ARRAY_BARS = Math.floor(WINDOW_WIDTH / 8);
+const ANIMATION_SPEED_MS = 5;
+const PRIMARY_COLOR = '#2db5a3'; // Darker teal color
+const SECONDARY_COLOR = '#f43f5e'; // Darker red color
+const BACKGROUND_COLOR = '#1e293b'; // Darker background color
 
-
-const PRIMARY_COLOR = 'turquoise'; //Normal color of bars
-const SECONDARY_COLOR = 'red'; //Color of bars when they are being compared
-const ANIMATION_SPEED_MS = 5; //Animation Speed (how fast color changes, how fast height gets overwritten)
-
-//Tooltips for buttons
-const DISABLED_BUTTON = "Currently Disabled"
+const DISABLED_BUTTON = "Currently Disabled";
 const ENABLED_BUTTON = {
-    nlogn: "O(NlogN) Time Complexity",
-    nSquare: "O(N^2) Time Complexity"
-}
+  nlogn: "O(NlogN) Time Complexity",
+  nSquare: "O(N^2) Time Complexity"
+};
 
-class SortingVisualizer extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            array: []
-        };
+const SortingVisualizer = () => {
+  const [array, setArray] = useState([]);
+
+  useEffect(() => {
+    resetArray();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const handleResize = () => {
+    WINDOW_WIDTH = window.innerWidth;
+    WINDOW_HEIGHT = window.innerHeight;
+    NUMBER_OF_ARRAY_BARS = Math.floor(WINDOW_WIDTH / 8);
+    resetArray();
+  };
+
+  const resetArray = () => {
+    const newArray = [];
+    for (let i = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
+      newArray.push(randomIntFromInterval(5, WINDOW_HEIGHT / 2));
     }
-    componentDidMount() {
-        this.resetArray();
-    }
-    //Generates new random array 
-    resetArray() {
-        const array = []
-        for (let i = 0;i < NUMBER_OF_ARRAY_BARS;i++) {
-            // array.push(200 + 10 * i); //pushing sorted increasing array
-            // array.push(500 - 5 * i); //pushing sorted decreasing array
-            array.push(randomIntFromInterval(25,WINDOW_HEIGHT-30)); //random array
+    setArray(newArray);
+    restoreStoreButtons();
+  };
+
+  const disableSortButtons = () => {
+    const buttons = ['mergeSort', 'quickSort', 'bubbleSort', 'insertionSort', 'selectionSort'];
+    buttons.forEach(id => {
+      const button = document.getElementById(id);
+      button.disabled = true;
+      button.title = DISABLED_BUTTON;
+      button.classList.add('opacity-50', 'cursor-not-allowed');
+      button.classList.remove('hover:from-teal-500', 'hover:to-blue-600');
+    });
+  };
+
+  const restoreStoreButtons = () => {
+    const buttons = [
+      { id: 'mergeSort', title: ENABLED_BUTTON.nlogn },
+      { id: 'quickSort', title: ENABLED_BUTTON.nSquare },
+      { id: 'bubbleSort', title: ENABLED_BUTTON.nSquare },
+      { id: 'insertionSort', title: ENABLED_BUTTON.nSquare },
+      { id: 'selectionSort', title: ENABLED_BUTTON.nSquare },
+    ];
+    buttons.forEach(({ id, title }) => {
+      const button = document.getElementById(id);
+      button.disabled = false;
+      button.title = title;
+      button.classList.remove('opacity-50', 'cursor-not-allowed');
+      button.classList.add('hover:from-teal-500', 'hover:to-blue-600');
+    });
+  };
+
+  const mergeSort = () => {
+    disableSortButtons();
+    const [animations, sortArray] = getMergeSortAnimations(array);
+    animateSort(animations);
+    const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS * animations.length / 2 + 3000);
+    setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
+  };
+
+  const quickSort = () => {
+    disableSortButtons();
+    const [animations, sortArray] = getQuickSortAnimations(array);
+    animateSort(animations);
+    const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS * animations.length / 2 + 3000);
+    setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
+  };
+
+  const bubbleSort = () => {
+    disableSortButtons();
+    const [animations, sortArray] = getBubbleSortAnimations(array);
+    animateSort(animations);
+    const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS * animations.length / 2 + 3000);
+    setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
+  };
+
+  const insertionSort = () => {
+    disableSortButtons();
+    const [animations, sortArray] = getInsertionSortAnimations(array);
+    animateSort(animations);
+    const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS * animations.length / 2 + 3000);
+    setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
+  };
+
+  const selectionSort = () => {
+    disableSortButtons();
+    const [animations, sortArray] = getSelectionSortAnimations(array);
+    animateSort(animations);
+    const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS * animations.length / 2 + 3000);
+    setTimeout(() => restoreStoreButtons(), RESTORE_TIME);
+  };
+
+  const animateSort = (animations) => {
+    for (let i = 0; i < animations.length; i++) {
+      const arrayBars = document.getElementsByClassName('array-bar');
+      const isColorChange = animations[i][0] === "comparision1" || animations[i][0] === "comparision2";
+      if (isColorChange) {
+        const color = animations[i][0] === "comparision1" ? SECONDARY_COLOR : PRIMARY_COLOR;
+        const [, barOneIndex, barTwoIndex] = animations[i];
+        const barOneStyle = arrayBars[barOneIndex].style;
+        const barTwoStyle = arrayBars[barTwoIndex].style;
+        setTimeout(() => {
+          barOneStyle.backgroundColor = color;
+          barTwoStyle.backgroundColor = color;
+        }, i * ANIMATION_SPEED_MS);
+      } else {
+        const [, barIndex, newHeight] = animations[i];
+        if (barIndex === -1) {
+          continue;
         }
-        this.setState({array: array});
-        this.restoreStoreButtons();
+        const barStyle = arrayBars[barIndex].style;
+        setTimeout(() => {
+          barStyle.height = `${newHeight}px`;
+        }, i * ANIMATION_SPEED_MS);
+      }
     }
-    disableSortButtons() {
-        document.getElementById("mergeSort").disabled = true;
-        let buttonStyle = document.getElementById("mergeSort").style;
-        document.getElementById("mergeSort").title = DISABLED_BUTTON;
-        buttonStyle.cursor = "default";
-        buttonStyle.background = "#000000";
+  };
 
-        document.getElementById("quickSort").disabled = true;
-        buttonStyle = document.getElementById("quickSort").style;
-        document.getElementById("quickSort").title = DISABLED_BUTTON;
-        buttonStyle.cursor = "default";
-        buttonStyle.background = "#000000";
+  return (
+    <div className="min-h-screen bg-slate-800 text-white p-8 pt-16 flex flex-col items-center">
+      <h1 className="text-4xl font-bold mb-12 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500">
+        Sorting Visualizer
+      </h1>
+      <div className="mb-12 flex gap-4 flex-wrap justify-center">
+        <button
+          className="px-6 py-2 rounded-md bg-gradient-to-r from-teal-400 to-teal-600 text-white font-semibold shadow-lg hover:from-teal-500 hover:to-teal-700 transition-all duration-300"
+          onClick={resetArray}
+          title="Generates a new random array"
+        >
+          Generate New Array
+        </button>
+        <button
+          id="mergeSort"
+          className="px-6 py-2 rounded-md bg-gradient-to-r from-purple-400 to-purple-600 text-white font-semibold shadow-lg hover:from-purple-500 hover:to-purple-700 transition-all duration-300"
+          onClick={mergeSort}
+          title={ENABLED_BUTTON.nlogn}
+        >
+          Merge Sort
+        </button>
+        <button
+          id="quickSort"
+          className="px-6 py-2 rounded-md bg-gradient-to-r from-yellow-400 to-yellow-600 text-white font-semibold shadow-lg hover:from-yellow-500 hover:to-yellow-700 transition-all duration-300"
+          onClick={quickSort}
+          title={ENABLED_BUTTON.nSquare}
+        >
+          Quick Sort
+        </button>
+        <button
+          id="bubbleSort"
+          className="px-6 py-2 rounded-md bg-gradient-to-r from-green-400 to-green-600 text-white font-semibold shadow-lg hover:from-green-500 hover:to-green-700 transition-all duration-300"
+          onClick={bubbleSort}
+          title={ENABLED_BUTTON.nSquare}
+        >
+          Bubble Sort
+        </button>
+        <button
+          id="insertionSort"
+          className="px-6 py-2 rounded-md bg-gradient-to-r from-red-400 to-red-600 text-white font-semibold shadow-lg hover:from-red-500 hover:to-red-700 transition-all duration-300"
+          onClick={insertionSort}
+          title={ENABLED_BUTTON.nSquare}
+        >
+          Insertion Sort
+        </button>
+        <button
+          id="selectionSort"
+          className="px-6 py-2 rounded-md bg-gradient-to-r from-indigo-400 to-indigo-600 text-white font-semibold shadow-lg hover:from-indigo-500 hover:to-indigo-700 transition-all duration-300"
+          onClick={selectionSort}
+          title={ENABLED_BUTTON.nSquare}
+        >
+          Selection Sort
+        </button>
+      </div>
+      <div className="w-full h-[calc(100vh-350px)] min-h-[400px] bg-slate-800 rounded-xl p-4 shadow-2xl flex items-end justify-center">
+        {array.map((value, idx) => (
+          <div
+            className="array-bar w-1 mx-px"
+            key={idx}
+            style={{
+              backgroundColor: PRIMARY_COLOR,
+              height: `${value}px`,
+            }}
+          ></div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
-        document.getElementById("insertionSort").disabled = true;
-        buttonStyle = document.getElementById("insertionSort").style;
-        document.getElementById("insertionSort").title = DISABLED_BUTTON;
-        buttonStyle.cursor = "default";
-        buttonStyle.background = "#000000";
-
-        document.getElementById("selectionSort").disabled = true;
-        buttonStyle = document.getElementById("selectionSort").style;
-        document.getElementById("selectionSort").title = DISABLED_BUTTON;
-        buttonStyle.cursor = "default";
-        buttonStyle.background = "#000000";
-
-        document.getElementById("bubbleSort").disabled = true;
-        buttonStyle = document.getElementById("bubbleSort").style;
-        document.getElementById("bubbleSort").title = DISABLED_BUTTON;
-        buttonStyle.cursor = "default";
-        buttonStyle.background = "#000000";
-    }
-    restoreStoreButtons() {
-        document.getElementById("mergeSort").disabled = false;
-        let buttonStyle = document.getElementById("mergeSort").style;
-        document.getElementById("mergeSort").title = ENABLED_BUTTON.nlogn;
-        buttonStyle.background = "#47535E";
-        buttonStyle.cursor = "pointer";
-
-        document.getElementById("quickSort").disabled = false;
-        buttonStyle = document.getElementById("quickSort").style;
-        document.getElementById("quickSort").title = ENABLED_BUTTON.nSquare;
-        buttonStyle.background = "#47535E";
-        buttonStyle.cursor = "pointer";
-
-        document.getElementById("bubbleSort").disabled = false;
-        buttonStyle = document.getElementById("bubbleSort").style;
-        document.getElementById("bubbleSort").title = ENABLED_BUTTON.nSquare;
-        buttonStyle.background = "#47535E";
-        buttonStyle.cursor = "pointer";
-
-        document.getElementById("selectionSort").disabled = false;
-        buttonStyle = document.getElementById("selectionSort").style;
-        document.getElementById("selectionSort").title = ENABLED_BUTTON.nSquare;
-        buttonStyle.background = "#47535E";
-        buttonStyle.cursor = "pointer";
-
-        document.getElementById("insertionSort").disabled = false;
-        buttonStyle = document.getElementById("insertionSort").style;
-        document.getElementById("insertionSort").title = ENABLED_BUTTON.nSquare;
-        buttonStyle.background = "#47535E";
-        buttonStyle.cursor = "pointer";
-    }
-    //Sorting Algorithms
-    mergeSort() {
-        this.disableSortButtons();
-        const [animations,sortArray] = getMergeSortAnimations(this.state.array);
-        console.log(animations);
-        for (let i = 0; i < animations.length; i++) {
-            const isColorChange = animations[i][0] == "comparision1" || animations[i][0] == "comparision2";
-            const arrayBars = document.getElementsByClassName('array-bar');
-            if(isColorChange === true) {
-                const [comparision, barOneIndex, barTwoIndex] = animations[i];
-                const color = (animations[i][0] == "comparision1") ? SECONDARY_COLOR : PRIMARY_COLOR;
-                const barOneStyle = arrayBars[barOneIndex].style;
-                const barTwoStyle = arrayBars[barTwoIndex].style;
-                //If we don't multiply by the index then every animations[i] wait for exactly ANIMATION_SPEED_MS and immediately change into final state
-                setTimeout(() => {
-                    barOneStyle.backgroundColor = color;
-                    barTwoStyle.backgroundColor = color;
-                },i * ANIMATION_SPEED_MS);
-                
-            }
-            else {
-                setTimeout(() => {
-                    const [overwrite, barOneIdx, newHeight] = animations[i];
-                    const barOneStyle = arrayBars[barOneIdx].style;
-                    barOneStyle.height = `${newHeight}px`;
-                  },i * ANIMATION_SPEED_MS);
-            }
-        }
-        // this.setState({array: sortArray})
-        const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS*animations.length/2 + 3000);
-        setTimeout(() => this.restoreStoreButtons(), RESTORE_TIME); 
-    }
-    quickSort() {
-        this.disableSortButtons();
-        const [animations,sortArray] = getQuickSortAnimations(this.state.array);
-        for (let i = 0; i < animations.length; i++) {
-            const isColorChange = animations[i][0] == "comparision1" || animations[i][0] == "comparision2";
-            const arrayBars = document.getElementsByClassName('array-bar');
-            if(isColorChange === true) {
-                const color = (animations[i][0] == "comparision1") ? SECONDARY_COLOR : PRIMARY_COLOR;
-                const [comparision, barOneIndex, barTwoIndex] = animations[i];
-                const barOneStyle = arrayBars[barOneIndex].style;
-                const barTwoStyle = arrayBars[barTwoIndex].style;
-                setTimeout(() => {
-                    barOneStyle.backgroundColor = color;
-                    barTwoStyle.backgroundColor = color;
-                },i * ANIMATION_SPEED_MS);
-            }
-            else {
-                const [swap, barIndex, newHeight] = animations[i];
-                if (barIndex === -1) {
-                    continue;
-                }
-                const barStyle = arrayBars[barIndex].style;
-                setTimeout(() => {
-                    barStyle.height = `${newHeight}px`;
-                },i * ANIMATION_SPEED_MS);  
-            }        }
-        // this.setState({array: sortArray})
-        const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS*animations.length/2 + 3000);
-        setTimeout(() => this.restoreStoreButtons(), RESTORE_TIME);  
-    }
-    bubbleSort() {
-        this.disableSortButtons();
-        const [animations,sortArray] = getBubbleSortAnimations(this.state.array);
-        for (let i = 0; i < animations.length; i++) {
-            const isColorChange = animations[i][0] == "comparision1" || animations[i][0] == "comparision2";
-            const arrayBars = document.getElementsByClassName('array-bar');
-            if(isColorChange === true) {
-                const color = (animations[i][0] == "comparision1") ? SECONDARY_COLOR : PRIMARY_COLOR;
-                const [comparision, barOneIndex, barTwoIndex] = animations[i];
-                const barOneStyle = arrayBars[barOneIndex].style;
-                const barTwoStyle = arrayBars[barTwoIndex].style;
-                setTimeout(() => {
-                    barOneStyle.backgroundColor = color;
-                    barTwoStyle.backgroundColor = color;
-                },i * ANIMATION_SPEED_MS);
-            }
-            else {
-                const [swap, barIndex, newHeight] = animations[i];
-                if (barIndex === -1) {
-                    continue;
-                }
-                const barStyle = arrayBars[barIndex].style;
-                setTimeout(() => {
-                    barStyle.height = `${newHeight}px`;
-                },i * ANIMATION_SPEED_MS);  
-            }
-        }
-        // this.setState({array: sortArray})
-        const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS*animations.length/2 + 3000);
-        setTimeout(() => this.restoreStoreButtons(), RESTORE_TIME);  
-    }
-    insertionSort() {
-        this.disableSortButtons();
-        const [animations,sortArray] = getInsertionSortAnimations(this.state.array);
-        for (let i = 0; i < animations.length; i++) {
-            const isColorChange = (animations[i][0] === "comparision1") || (animations[i][0] === "comparision2");
-            const arrayBars = document.getElementsByClassName('array-bar');
-            if(isColorChange === true) {
-                const color = (animations[i][0] === "comparision1") ? SECONDARY_COLOR : PRIMARY_COLOR;
-                const [temp, barOneIndex, barTwoIndex] = animations[i];
-                const barOneStyle = arrayBars[barOneIndex].style;
-                const barTwoStyle = arrayBars[barTwoIndex].style;
-                setTimeout(() => {
-                    barOneStyle.backgroundColor = color;
-                    barTwoStyle.backgroundColor = color;
-                },i * ANIMATION_SPEED_MS);
-            }
-            else {
-                const [temp, barIndex, newHeight] = animations[i];
-                const barStyle = arrayBars[barIndex].style;
-                setTimeout(() => {
-                    barStyle.height = `${newHeight}px`;
-                },i * ANIMATION_SPEED_MS);  
-            }
-        }
-        // this.setState({array: sortArray})
-        const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS*animations.length/2 + 3000);
-        setTimeout(() => this.restoreStoreButtons(), RESTORE_TIME); 
-    }
-    selectionSort() {
-        this.disableSortButtons();
-        const [animations,sortArray] = getSelectionSortAnimations(this.state.array);
-        for (let i = 0; i < animations.length; i++) {
-            const isColorChange = (animations[i][0] === "comparision1") || (animations[i][0] === "comparision2");
-            const arrayBars = document.getElementsByClassName('array-bar');
-            if(isColorChange === true) {
-                const color = (animations[i][0] === "comparision1") ? SECONDARY_COLOR : PRIMARY_COLOR;
-                const [temp, barOneIndex, barTwoIndex] = animations[i];
-                const barOneStyle = arrayBars[barOneIndex].style;
-                const barTwoStyle = arrayBars[barTwoIndex].style;
-                setTimeout(() => {
-                    barOneStyle.backgroundColor = color;
-                    barTwoStyle.backgroundColor = color;
-                },i * ANIMATION_SPEED_MS);
-            }
-            else {
-                const [temp, barIndex, newHeight] = animations[i];
-                const barStyle = arrayBars[barIndex].style;
-                setTimeout(() => {
-                    barStyle.height = `${newHeight}px`;
-                },i * ANIMATION_SPEED_MS);  
-            }
-        }
-        // this.setState({array: sortArray})
-        const RESTORE_TIME = parseInt(ANIMATION_SPEED_MS*animations.length/2 + 3000);
-        setTimeout(() => this.restoreStoreButtons(), RESTORE_TIME); 
-    }
-    render() {
-        const array = this.state.array;
-        const SORT_BUTTONS = 6;
-        const TOTAL_BUTTONS = 1 + SORT_BUTTONS;
-        return(
-            <>
-            <div className="array-container" style={{position:'absolute', right:`20px`}}>
-                {array.map((value, idx) => (
-                    <div
-                        className="array-bar"
-                        key={idx}
-                        style={{
-                        backgroundColor: PRIMARY_COLOR,
-                        height: `${value}px`
-                        }}
-                    ></div>
-                ))}
-            </div>
-            <div className="buttons" > 
-                <button title="Generates a new random array" style={{position:'relative',top:`${0*(WINDOW_HEIGHT-20)/TOTAL_BUTTONS}px`}} onClick={() => this.resetArray()}>
-                    Generate New Array
-                </button>
-                <button title="O(NlogN) Time Complexity" id = "mergeSort" style={{position:'relative',top:`${0.5*(WINDOW_HEIGHT-20)/TOTAL_BUTTONS}px`}} onClick={() => this.mergeSort()}>
-                    Merge Sort
-                </button>
-                <button title="O(N^2) Time Complexity" id = "quickSort" style={{position:'relative',top:`${1.5*(WINDOW_HEIGHT-20)/TOTAL_BUTTONS}px`}} onClick={() => this.quickSort()}>
-                    Quick Sort
-                </button>
-                <button title="O(N^2) Time Complexity" id = "bubbleSort" style={{position:'relative',top:`${2.5*(WINDOW_HEIGHT-20)/TOTAL_BUTTONS}px`}} onClick={() => this.bubbleSort()}>
-                    Bubble Sort
-                </button>
-                <button title="O(N^2) Time Complexity" id = "insertionSort" style={{position:'relative',top:`${3.5*(WINDOW_HEIGHT-20)/TOTAL_BUTTONS}px`}} onClick={() => this.insertionSort()}>
-                    Insertion Sort
-                </button>
-                <button title="O(N^2) Time Complexity" id = "selectionSort" style={{position:'relative',top:`${5.5*(WINDOW_HEIGHT-20)/TOTAL_BUTTONS}px`}} onClick={() => this.selectionSort()}>
-                    Selection Sort
-                </button>
-            </div>    
-            </>
-        );
-    }
-}
-
-// From https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
 function randomIntFromInterval(min, max) {
-    // min and max included
-    return Math.floor(Math.random() * (max - min + 1) + min);
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 export default SortingVisualizer;
-
-
