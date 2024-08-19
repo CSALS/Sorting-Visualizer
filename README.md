@@ -2,7 +2,9 @@
 A visualization for various sorting algorithms like merge sort, heap sort, quick sort, insertion sort, bubble sort and selection sort.<br>
 Access it using this link https://csals.github.io/Sorting-Visualizer/
 
-Rewrote it with Cursor + Claude to enhance the UI and complete all the TODOs
+Rewrote it with **Cursor + Claude** to enhance the UI and complete all the TODOs
+
+## before & after
 
 Before:
 ![Before](older_ui.JPG)
